@@ -44,7 +44,8 @@ class LPS331AP(object):
         if self.__deviceAdressCheck(self.address):
             print('Device found')
             self.__power_down(self.address) #for clean start
-            
+        elif self.__working_check(self.address):
+            raise EnvironmentError('Chip seems to be broken')
         else:
             raise ValueError('Wrong LPS331AP address')
             
@@ -133,3 +134,12 @@ class LPS331AP(object):
         raw_press = self.__string_to_int(hex_string)
         press_mBar = raw_press/4096
         return press_mBar
+    
+    def __working_check(self, address):
+        c1 = self.__read_pressure(address)
+        c2 = self.__read_pressure(address)
+        c3 = self.__read_pressure(address)
+        if c1 == c2 == c3:
+            return True
+        else:
+            return False
