@@ -3,26 +3,27 @@ from time import sleep
 '''
     Registers address map
 '''
-EF_P_XL = 0x08
-REF_P_L = 0x09
-REF_P_H = 0x0a
-WHO_AM_I = 0x0f
-RES_CONF = 0x10
-CTRL_REG1 = 0x20
-CTRL_REG2 = 0x21
-CTRL_REG3 = 0x22
-INT_CFG_REG = 0x23
-INT_SOURCE_REG = 0x24
-THS_P_LOW_RadEG = 0x25
-THS_P_HIGH_REG = 0x26
-STATUS_REG = 0x27
-PRESS_OUT_XL = 0x28
-PRESS_OUT_L = 0x29
-PRESS_OUT_H = 0x2a
-TEMP_OUT_L = 0x2b
-TEMP_OUT_H = 0x2c
-AMP_CTRL = 0x30
-
+r_a_m = {
+"EF_P_XL" : 0x08,
+"REF_P_L" : 0x09,
+"REF_P_H" : 0x0a,
+"WHO_AM_I" : 0x0f,
+"RES_CONF" : 0x10,
+"CTRL_REG1" : 0x20,
+"CTRL_REG2" : 0x21,
+"CTRL_REG3" : 0x22,
+"INT_CFG_REG" : 0x23,
+"INT_SOURCE_REG" : 0x24,
+"THS_P_LOW_RadEG" : 0x25,
+"THS_P_HIGH_REG" : 0x26,
+"STATUS_REG" : 0x27,
+"PRESS_OUT_XL" : 0x28,
+"PRESS_OUT_L" : 0x29,
+"PRESS_OUT_H" : 0x2a,
+"TEMP_OUT_L" : 0x2b,
+"TEMP_OUT_H" : 0x2c,
+"AMP_CTRL" : 0x30
+}
 '''
     STRING to HEX map
 '''
@@ -90,26 +91,26 @@ class LPS331AP(object):
         return res
 
     def __deviceAdressCheck(self, address):
-        res = self.i2c.readBytes(address, WHO_AM_I, 1)[0]
+        res = self.i2c.readBytes(address, r_a_m["WHO_AM_I"], 1)[0]
         if res == 0xBB:
             return True
         else:
             return False
 
     def __power_down(self, address):
-        self.i2c.writeByte(address, CTRL_REG1, 0x00)
+        self.i2c.writeByte(address, r_a_m["CTRL_REG1"], 0x00)
 
     def __set_higher_precision(self, address):
-        self.i2c.writeByte(address, RES_CONF, 0x7a)
+        self.i2c.writeByte(address, r_a_m["RES_CONF"], 0x7a)
 
     def __turn_on(self, address):
-        self.i2c.writeByte(address, CTRL_REG1, 0x84)
+        self.i2c.writeByte(address, r_a_m["CTRL_REG1"], 0x84)
 
     def __run_measurement(self, address):
-        self.i2c.writeByte(address, CTRL_REG2, 0x01)
+        self.i2c.writeByte(address, r_a_m["CTRL_REG2"], 0x01)
 
     def __check_measurement(self, address):
-        r = self.i2c.readBytes(0x5c, CTRL_REG2, 1)[0]
+        r = self.i2c.readBytes(0x5c, r_a_m["CTRL_REG2"], 1)[0]
         if r == 0x00:
             return True
         else:
@@ -117,17 +118,17 @@ class LPS331AP(object):
             self.__check_measurement(address)
 
     def __read_temperature(self, address):
-        part1 = self.i2c.readBytes(address, TEMP_OUT_L, 1)[0]
-        part2 = self.i2c.readBytes(address, TEMP_OUT_H, 1)[0]
+        part1 = self.i2c.readBytes(address, r_a_m["TEMP_OUT_L"], 1)[0]
+        part2 = self.i2c.readBytes(address, r_a_m["TEMP_OUT_H"], 1)[0]
         hex_string = '' + hex(part2)[2:] + hex(part1)[2:]
         raw_temp = self.__string_to_int(hex_string) - 32767
         temp_DegC = 42.5 + (raw_temp / (120 * 4))
         return temp_DegC
 
     def __read_pressure(self, address):
-        part1 = self.i2c.readBytes(address, PRESS_OUT_XL, 1)[0]
-        part2 = self.i2c.readBytes(address, PRESS_OUT_L, 1)[0]
-        part3 = self.i2c.readBytes(address, PRESS_OUT_H, 1)[0]
+        part1 = self.i2c.readBytes(address, r_a_m["PRESS_OUT_XL"], 1)[0]
+        part2 = self.i2c.readBytes(address, r_a_m["PRESS_OUT_L"], 1)[0]
+        part3 = self.i2c.readBytes(address, r_a_m["PRESS_OUT_H"], 1)[0]
         hex_string = '' + hex(part3)[2:] + hex(part2)[2:] + hex(part1)[2:]
         raw_press = self.__string_to_int(hex_string)
         press_mBar = raw_press/4096
