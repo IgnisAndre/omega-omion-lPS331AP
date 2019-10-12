@@ -139,7 +139,7 @@ class LPS331AP(object):
         c1 = self.__read_pressure(address)
         c2 = self.__read_pressure(address)
         c3 = self.__read_pressure(address)
-        if c1 == c2 == c3:
+        if c1 == c2 == c3 == (0x2f8000/4096):
             return True
         else:
             return False
