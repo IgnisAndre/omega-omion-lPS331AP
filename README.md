@@ -1,5 +1,5 @@
-# omega-omion-lPS331AP
-Python library to use lPS331AP chip with Omega Onion
+# omega-onion-lPS331AP
+Python3 library to use lPS331AP chip with Omega Onion (tested on Omega2)
 
 Official docs https://files.amperka.ru/datasheets/LPS331AP-barometer.pdf
 
@@ -14,9 +14,9 @@ This library contains a class lPS331AP with 3 public methods:
 And a dictionary <b>r_a_m</b> with registers adresses map
 # How to use
 
-Firstly, You need to install i2c
+Firstly, You need to install python3 and i2c
 opkg update
-opkg install pyOnionI2C
+opkg install python3-light pyOnionI2C
 
 Secondly, you need to download <b>LPS331AP.py</b> to your project folder
 
