@@ -1,8 +1,10 @@
 from OmegaExpansion import onionI2C
 from time import sleep
-'''
-    Registers address map
-'''
+
+BROKEN_MARKER = 0x2f8000/4096
+
+#    Registers address map
+
 r_a_m = {
 "EF_P_XL" : 0x08,
 "REF_P_L" : 0x09,
@@ -24,9 +26,9 @@ r_a_m = {
 "TEMP_OUT_H" : 0x2c,
 "AMP_CTRL" : 0x30
 }
-'''
-    STRING to HEX map
-'''
+
+# STRING to HEX map
+
 s_t_h = { '0' : 0,  '1' : 1,  '2' : 2,  '3' : 3,
           '4' : 4,  '5' : 5,  '6' : 6,  '7' : 7,
           '8' : 8,  '9' : 9,  'a' : 10, 'b' : 11,
@@ -141,7 +143,7 @@ class LPS331AP(object):
         c1 = self.__read_pressure(address)
         c2 = self.__read_pressure(address)
         c3 = self.__read_pressure(address)
-        if c1 == c2 == c3 == (0x2f8000/4096):
+        if c1 == c2 == c3 == BROKEN_MARKER:
             return True
         else:
             return False
